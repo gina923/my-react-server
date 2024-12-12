@@ -11,7 +11,24 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3 
+        uses: actions/checkout@v3
+
+      - name: Check Docker version
+        run: docker --version
+
+      - name: Install Docker if not found
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+      
+      - name: Check ecs-deploy version
+        run: ecs-deploy --version
+
+      - name: Install ecs-deploy if not found
+        run: |
+          curl -LO https://github.com/aws/amazon-ecs-cli/releases/download/0.4.0/ecs-deploy-linux-amd64
+          chmod +x ecs-deploy-linux-amd64
+          sudo mv ecs-deploy-linux-amd64 /usr/local/bin/ecs-deploy
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2  
