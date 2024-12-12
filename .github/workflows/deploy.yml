@@ -1,0 +1,48 @@
+name: Deploy to ECS
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3 
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2  
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3 
+
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1  
+        with:
+          region: ap-northeast-2 
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }} .  # Docker 이미지 빌드
+
+      - name: Push Docker image to ECR
+        run: |
+          docker tag ${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}  # ECR에 이미지 푸시
+
+      - name: Deploy to ECS
+        run: |
+          ecs-deploy -c ${{ secrets.CLUSTER_NAME }} -n ${{ secrets.SERVICE_NAME }} -i ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}  # ECS 서비스 업데이트
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ap-northeast-2
