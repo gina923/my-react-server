@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  
+    runs-on: ubuntu-22.04  
 
     steps:
       - name: Checkout code
@@ -26,7 +26,7 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1  
+        uses: aws-actions/amazon-ecr-login@v2
         with:
           region: ap-northeast-2 
 
@@ -46,3 +46,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ap-northeast-2
+      
