@@ -3,7 +3,7 @@ name: Deploy to ECS
 on:
   push:
     branches:
-      - main  
+      - main
 
 jobs:
   build:
@@ -18,7 +18,6 @@ jobs:
 
       - name: Cache Docker layers
         uses: actions/cache@v3 
-
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -27,8 +26,8 @@ jobs:
 
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
-        env:
-          AWS_region: ap-northeast-2 
+        with:
+          region: ap-northeast-2  # region을 'with' 구문으로 설정
 
       - name: Build Docker image
         run: |
@@ -46,4 +45,3 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ap-northeast-2
-      
