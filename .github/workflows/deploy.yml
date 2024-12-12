@@ -42,8 +42,8 @@ jobs:
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}
 
       - name: Install ecs-deploy
-  run: |
-    curl -o- https://raw.githubusercontent.com/mesosphere/ecs-deploy/master/install.sh | bash
+        run: |
+          curl -o- https://raw.githubusercontent.com/mesosphere/ecs-deploy/master/install.sh | bash
 
       - name: Deploy to ECS
         run: |
