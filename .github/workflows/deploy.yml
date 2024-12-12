@@ -41,13 +41,14 @@ jobs:
           docker tag ${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}
 
-      - name: Install ecs-deploy
+      - name: Deploy to ECS using AWS CLI
         run: |
-          curl -o- https://raw.githubusercontent.com/mesosphere/ecs-deploy/master/install.sh | bash
-
-      - name: Deploy to ECS
-        run: |
-          ecs-deploy -c ${{ secrets.CLUSTER_NAME }} -n ${{ secrets.SERVICE_NAME }} -i ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}  # ECS 서비스 업데이트
+          aws ecs update-service \
+            --cluster ${{ secrets.CLUSTER_NAME }} \
+            --service ${{ secrets.SERVICE_NAME }} \
+            --force-new-deployment \
+            --image ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}
+        
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
