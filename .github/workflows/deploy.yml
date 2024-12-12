@@ -44,7 +44,7 @@ jobs:
       - name: Register new ECS Task Definition
         run: |
           TASK_DEFINITION=$(aws ecs register-task-definition \
-            --family my-task-family \  # 여기서 'my-task-family'를 실제 값으로 변경
+            --family task1 \  # 'task1'을 사용
             --container-definitions "[{\"name\":\"${{ secrets.CONTAINER_NAME }}\",\"image\":\"${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}\",\"memory\":512,\"cpu\":256,\"portMappings\":[{\"containerPort\":80,\"hostPort\":80}]}]")
           echo "Task definition registered: $TASK_DEFINITION"
         env:
