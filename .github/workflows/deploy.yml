@@ -57,4 +57,7 @@ jobs:
           service: ${{ secrets.SERVICE_NAME }}
           cluster: ${{ secrets.CLUSTER_NAME }}
           wait-for-service-stability: true
-          region: ap-northeast-2  # 리전 추가
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-northeast-2  # 리전 정보 환경 변수로 설정
