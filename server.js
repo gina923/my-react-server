@@ -22,5 +22,5 @@ app.get('/users', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:5000`);
+  console.log(`Server running at http://localhost:${port}`);
 });
