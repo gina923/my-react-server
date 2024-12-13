@@ -22,5 +22,5 @@ app.get('/users', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://reactapploadbalancerv1-1346002768.ap-northeast-2.elb.amazonaws.com`);
+  console.log(`Server running at http://localhost:5000`);
 });
