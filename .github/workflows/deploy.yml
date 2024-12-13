@@ -47,12 +47,13 @@ jobs:
 
       - name: Register new ECS Task Definition
         run: |
+          echo "Registering new ECS Task Definition..."
           TASK_DEFINITION=$(aws ecs register-task-definition \
             --family task1 \
             --container-definitions "[{\"name\":\"my-react-server\",\"image\":\"${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}\",\"memory\":1024,\"cpu\":256,\"portMappings\":[{\"containerPort\":5000,\"hostPort\":5000}]}]")
 
-          # 디버깅용: `TASK_DEFINITION` 값 출력
-          echo "TASK_DEFINITION: $TASK_DEFINITION"
+          echo "Raw TASK_DEFINITION output:"
+          echo "$TASK_DEFINITION"
 
           # jq를 사용하여 ARN 추출
           NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq -r '.taskDefinition.taskDefinitionArn')
@@ -61,28 +62,8 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ap-northeast-2
-      
+    
 
-
-      - name: Register new ECS Task Definition
-        run: |
-          TASK_DEFINITION=$(aws ecs register-task-definition \
-            --family task1 \
-            --container-definitions "[{\"name\":\"my-react-server\",\"image\":\"${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}:${{ github.sha }}\",\"memory\":1024,\"cpu\":256,\"portMappings\":[{\"containerPort\":5000,\"hostPort\":5000}]}]")
-
-          # 디버깅용: `TASK_DEFINITION` 값 출력
-          echo "TASK_DEFINITION: $TASK_DEFINITION"
-
-          # jq를 사용하여 ARN 추출
-          NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq -r '.taskDefinition.taskDefinitionArn')
-          echo "NEW_TASK_DEFINITION: $NEW_TASK_DEFINITION"
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ap-northeast-2
-
-
-      
       - name: Update ECS service with new task definition
         run: |
           NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq -r '.taskDefinition.taskDefinitionArn')
