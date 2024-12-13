@@ -57,3 +57,4 @@ jobs:
           service: ${{ secrets.SERVICE_NAME }}
           cluster: ${{ secrets.CLUSTER_NAME }}
           wait-for-service-stability: true
+          region: ap-northeast-2  # 리전 추가
