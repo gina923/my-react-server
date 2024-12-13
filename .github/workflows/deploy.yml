@@ -50,7 +50,8 @@ jobs:
             "requiresCompatibilities": ["FARGATE"],
             "cpu": "256",
             "memory": "1024",
-            "networkMode": "awsvpc"
+            "networkMode": "awsvpc",
+            "executionRoleArn": "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ecs-task-execution-role"
           }' > task_definition.json
 
       # 4. ECS 작업 정의 등록 및 서비스 배포
